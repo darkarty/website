@@ -1,2 +1,0 @@
-# website
-try django out
