@@ -1,12 +1,22 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Contact List</title>
+</head>
+<body>
+      <h1>Contact List</h1>
+      <p>{{rows}}</p>
+      <ul>
+         {% for row in rows %}
+         <li>
+            <a href="/{{row[0]}}">{{row[1]}} {{row[2]}}</a>
+         </li>
+         {% endfor %}
+      </ul>
 
-   <head>
-      <script type = "text/javascript" 
-         src = "{{ url_for('static', filename = 'hello.js') }}" ></script>
-   </head>
-   
-   <body>
-      <input type = "button" onclick = "sayHello()" value = "Say Hello" />
-   </body>
-   
+     <a href="/new">Create New Contact</a>
+      
+</body>
 </html>
