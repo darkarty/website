@@ -43,6 +43,16 @@ def edit_user(userID):
 	else:
 		return render_template('user_edit.html', userID=userID)
 
+@app.route('/<int:userID>/delete')
+def delete_user(userID):
+	con = sql.connect('database.db')
+	cur = con.cursor()
+	cur.execute("DELETE FROM contacts WHERE rowid='%d'" % userID)
+	con.commit()
+	con.close
+	return redirect(url_for('index'))
+
+
 @app.route('/new', methods=['POST', 'GET'])
 def new():
 	if request.method=='POST':
@@ -56,7 +66,7 @@ def new():
 		cur.execute('INSERT INTO contacts (firstname, lastname, email, phone, notes) VALUES(?,?,?,?,?)',(firstname, lastname, email, phone, notes))
 		con.commit()
 		con.close
-		redirect(url_for('index'))	
+		return redirect(url_for('index'))	
 	else:
 		return render_template('new.html')
 
