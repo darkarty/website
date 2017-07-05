@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Update Contact</title>
+</head>
+<body>
+      <h1>Update Contact</h1>
+      <form action = "/{{userID}}/edit" method = "POST">
+         <p>First Name:</p>
+         <input type = "text" name = "firstname" required id="id_first_name" maxlength="100"/><br>
+         <p>Last Name:</p>
+         <input type = "text" name = "lastname" required id="id_last_name" maxlength="100"/><br>
+         <p>E-mail:</p>
+         <input type="email" name="email" id="id_email" maxlength="254"/><br>
+         <p>Phone Number:</p>
+         <input type="text" name="phone" id="id_phone" maxlength="20" /><br>
+         <p>Notes:</p>
+         <textarea name="notes" cols="40" rows="10" id="id_notes"></textarea>
+         <p><input type="submit" value="Update Contact" /></p>
+      </form>
+
+    
+      
+</body>
+</html>

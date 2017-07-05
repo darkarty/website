@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>New Contact</title>
+</head>
+<body>
+{% for row in rows %}
+      <h1>Contact List: {{row[1]}} {{row[2]}}</h1>
+      <p>First Name:<br> {{row[1]}}</p>
+      <p>Last Name:<br> {{row[2]}}</p>
+      <p>Email:<br> {{row[3]}}</p>
+      <p>Phone:<br> {{row[4]}}</p>
+      <p>Notes:<br> {{row[5]}}</p>
+
+
+<p><a href="/">List of People</a> | <a href="/{{row[0]}}/edit">Edit Contact</a><p>
+{% endfor %}
+    
+      
+</body>
+</html>

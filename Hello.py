@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import sqlite3 as sql
 import createDB
 
@@ -18,7 +18,30 @@ def index():
 
 @app.route('/<int:userID>')
 def user(userID):
-	return render_template('user_info.html',userID = userID)
+	con = sql.connect('database.db')
+	#con.row_factory = sql.Row
+	cur = con.cursor()
+	cur.execute("select rowid, * from contacts where rowid='%d'" % userID)
+	rows = cur.fetchall()
+	con.close
+	return render_template('user_info.html',userID = userID, rows = rows)
+
+@app.route('/<int:userID>/edit', methods = ['POST', 'GET'])
+def edit_user(userID):
+	if request.method == 'POST':
+		firstname = request.form['firstname']
+		lastname = request.form['lastname']
+		email = request.form['email']
+		phone = request.form['phone']
+		notes = request.form['notes']
+		con = sql.connect('database.db')
+		cur = con.cursor()
+		cur.execute("UPDATE contacts SET firstname = '%s', lastname = '%s', email = '%s', phone = '%s', notes = '%s' WHERE rowid='%d'" % (firstname, lastname, email, phone, notes, userID))
+		con.commit()
+		con.close
+		return redirect(url_for('index'))
+	else:
+		return render_template('user_edit.html', userID=userID)
 
 @app.route('/new', methods=['POST', 'GET'])
 def new():
@@ -28,14 +51,12 @@ def new():
 		email = request.form['email']
 		phone = request.form['phone']
 		notes = request.form['notes']
-
 		con = sql.connect('database.db')
 		cur = con.cursor()
 		cur.execute('INSERT INTO contacts (firstname, lastname, email, phone, notes) VALUES(?,?,?,?,?)',(firstname, lastname, email, phone, notes))
 		con.commit()
 		con.close
-		return redirect('/')
-			
+		redirect(url_for('index'))	
 	else:
 		return render_template('new.html')
 
