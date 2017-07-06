@@ -1,10 +1,64 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask.ext.login import (LoginManager, current_user, login_required, login_user, logout_user, UserMixin, confirm_login, fresh_login_required)
+
+from models import User
 import sqlite3 as sql
 import createDB
 
 app = Flask(__name__)
 app.secret_key = 'a3u&UV(*9uv49UGIriuge8879b9*NRE_jkFEOH'
 
+#flask-login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+login_manager.login_message = u"Please log in to access this page."
+login_manager.refresh_view = "reauth"
+
+users = {'foo@bar.tld': {'pw': 'secret'}}
+
+@login_manager.user_loader
+def user_loader(user_id):
+	con = sql.connect('database.db')
+	cur = con.cursor()
+	cur.execute("select id from users where id='%s'" % user_id)
+	rows = cur.fetchall()
+	con.close
+	return User(rows[0][0])
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	if request.method == 'GET':
+		return '''
+		<form action='login' method='POST'>
+		<input type='text' name='email' id='email' placeholder='email'></input>
+		<input type='password' name='pw' id='pw' placeholder='password'></input>
+		<input type='submit' name='submit'></input>
+		</form>
+		'''
+
+	email = request.form['email']
+	con = sql.connect('database.db')
+	cur = con.cursor()
+	cur.execute("select id, password from users where id='%s'" % email)
+	rows= cur.fetchall()
+	con.close
+	#return render_template('test.html', rows=rows)
+
+	if request.form['pw'] == rows[0][1]:
+		user = User(rows[0][0])
+		user.id = email
+		login_user(user)
+		return redirect(url_for('index'))
+
+	return 'Bad login'
+
+@app.route('/logout')
+def logout():
+	logout_user()
+	return redirect(url_for('index'))
+
+# routes
 @app.route('/')
 def index():
 	con = sql.connect('database.db')
